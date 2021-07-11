@@ -1,0 +1,13 @@
+{
+	"bodyJSONFormatter": {
+		"sections": [
+			{
+				"displayname": "",
+				"fields": [
+					"Title",
+					"Answer"
+				]
+			}
+		]
+	}
+}
