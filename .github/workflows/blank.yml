@@ -38,6 +38,8 @@ jobs:
           const { reqData } = process.env
           const val = `${reqData}`
           const pullid = val.substring(val.indexOf('#')+1,val.indexOf(' from'))
+          const deleteName = val.substring(val.indexOf('/')+1,val.indexOf(' '))
+          const deleteType = val.substring(val.indexOf(' ')+1,val.indexOf('/'))
           core.setOutput('pullid', pullid)  
      - uses: octokit/request-action@v2.x
        id: get_pull
