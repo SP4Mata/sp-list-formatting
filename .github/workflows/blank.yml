@@ -31,19 +31,26 @@ jobs:
           route: GET /repos/${{ github.repository }}/commits/${{ github.event.head_commit.id  }} 
      - id: get-pullid
        env: 
-           reqData: ${{ fromJson(steps.get_commit.outputs.data).commit.message }}
+           reqData: ${{ fromJson(steps.get_commit.outputs.data) }}
        uses: actions/github-script@0.9.0
        with:
         script: |
           const { reqData } = process.env
           const val = `${reqData}`
-          const pullid = val.substring(val.indexOf('#')+1,val.indexOf(' from'))
-          const deleteName = val.substring(val.indexOf('/')+1,val.indexOf(' '))
-          const deleteType = val.substring(val.indexOf(' ')+1,val.indexOf('/'))
-          const deleteType = val.substring(val.indexOf(' ')+1,val.indexOf('/'))
-          const folderName = val.substring(val.indexOf(' ')+1,val.indexOf('/'))
-          core.setOutput('itemId', (val.indexOf('Delete') > -1?(deleteType + deleteName):))
+          const pullid = val.commit.message.substring(val.commit.message.indexOf('#')+1,val.commit.message.indexOf(' from'))
+          const deleteName = val.commit.message.substring(val.commit.message.indexOf('/')+1,val.commit.message.indexOf(' '))
+          const deleteType = val.commit.message.substring(val.commit.message.indexOf(' ')+1,val.commit.message.indexOf('/'))
+          const deleteType = val.commit.message.substring(val.commit.message.indexOf(' ')+1,val.commit.message.indexOf('/'))
+          const folderName = val.files[0].filename.substring(val.files[0].filename.lastIndexOf('/'))
+          core.setOutput('itemId', (val.commit.message.indexOf('Delete') > -1?(deleteType + deleteName):))
           core.setOutput('pullid', pullid)  
+     - name: get Data
+       uses: fjogeleit/http-request-action@master
+       id: get_atable
+       with:
+        url: ${{ format('{0}{1}{2}''{3}''', secrets.APIURL,secrets.APIKEY,'&$filter=Name eq ',${{ steps.get-pullid.outputs.itemId  }} }}
+        method: 'GET'
+     - run: echo "${{ steps.get_atable.outputs.response }}"
      - uses: octokit/request-action@v2.x
        id: get_pull
        env:
@@ -66,13 +73,6 @@ jobs:
        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
      - run: echo "${{ steps.get_json.outputs.data }}"
-     - name: get Data
-       uses: fjogeleit/http-request-action@master
-       id: get_atable
-       with:
-        url: ${{ format('{0}{1}{2}''{3}''', secrets.APIURL,secrets.APIKEY,'&$filter=Name eq ',fromJson(steps.get_json.outputs.data).name) }}
-        method: 'GET'
-     - run: echo "${{ steps.get_atable.outputs.response }}"
      - name: set json data
        id: setjsondata
        run: |          
