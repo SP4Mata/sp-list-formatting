@@ -38,8 +38,6 @@ jobs:
           const { reqData } = process.env
           const val = reqData
           const pullid = val.commit.message.substring(val.commit.message.indexOf('#')+1,val.commit.message.indexOf(' from'))
-          const deleteName = val.commit.message.substring(val.commit.message.indexOf('/')+1,val.commit.message.indexOf(' '))
-          const deleteType = val.commit.message.substring(val.commit.message.indexOf(' ')+1,val.commit.message.indexOf('/'))
           const folderName = val.files[0].filename.substring(val.files[0].filename.lastIndexOf('/'))
           core.setOutput('itemId', (val.commit.message.indexOf('Delete') > -1?(deleteType + deleteName):folderName))
           core.setOutput('pullid', pullid)
