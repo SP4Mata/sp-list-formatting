@@ -10,7 +10,7 @@
 	"rowFormatter": {
 		"elmType": "div",
 		"style": {
-			"background-color": "#6f4e37"
+			"background-color": "#69797e"
 		},
 		"children": [
 			{
