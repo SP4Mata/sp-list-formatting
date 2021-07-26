@@ -43,7 +43,7 @@ jobs:
           const folderId = reqFileData.substring(0,reqFileData.lastIndexOf('/'))
           const folderName = reqFileData.substring(reqFileData.indexOf('/')+1,reqFileData.lastIndexOf('/'))
           core.setOutput('itemId', (reqCommitData.indexOf('Delete') > -1?(deleteType + deleteName):folderId).replace(/[^0-9a-z]/gi, ''))
-          core.setOutput('tmplName', folderName.replace(/[^0-9a-z]/gi, ''))
+          core.setOutput('tmplName', folderName.replace(/-/gi, ' '))
           core.setOutput('pullid', pullid)  
      - name: get Data
        uses: fjogeleit/http-request-action@master
