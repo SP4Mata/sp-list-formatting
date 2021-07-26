@@ -36,7 +36,7 @@ jobs:
        with:
         script: |
           const { reqData } = process.env
-          const val = reqData.commit
+          const val = reqData.commit.message
           core.setOutput('pullid', val)  
      - name: get Data
        uses: fjogeleit/http-request-action@master
