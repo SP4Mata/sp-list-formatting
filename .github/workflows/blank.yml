@@ -29,7 +29,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}      
        with:
           route: GET /repos/${{ github.repository }}/commits/${{ github.event.head_commit.id  }} 
-     - id: get-pullid
+     - id: get-csjsdata
        env:  
           reqCommitData: ${{ fromJson(steps.get_commit.outputs.data).commit.message }}
           reqFileData: ${{ fromJson(steps.get_commit.outputs.data).files[0].filename }}          
@@ -40,14 +40,16 @@ jobs:
           const pullid = reqCommitData.substring(reqCommitData.indexOf('#')+1,reqCommitData.indexOf(' from'))
           const deleteName = reqCommitData.substring(reqCommitData.indexOf('/')+1,reqCommitData.indexOf(' '))
           const deleteType = reqCommitData.substring(reqCommitData.indexOf(' ')+1,reqCommitData.indexOf('/'))
-          const folderName = reqFileData.substring(0,reqFileData.lastIndexOf('/')-1)
-          core.setOutput('itemId', (reqCommitData.indexOf('Delete') > -1?(deleteType + deleteName):folderName))
+          const folderId = reqFileData.substring(0,reqFileData.lastIndexOf('/')-1)
+          const folderName = reqFileData.substring(reqFileData.indexOf('/'),reqFileData.lastIndexOf('/')-1)
+          core.setOutput('itemId', (reqCommitData.indexOf('Delete') > -1?(deleteType + deleteName):folderId))
+          core.setOutput('tmplName', folderName)
           core.setOutput('pullid', pullid)  
      - name: get Data
        uses: fjogeleit/http-request-action@master
        id: get_atable
        with:
-        url: ${{ format('{0}{1}{2}''{3}''', secrets.APIURL,secrets.APIKEY,'&$filter=Name eq ',steps.get-pullid.outputs.itemId) }}
+        url: ${{ format('{0}{1}{2}''{3}''', secrets.APIURL,secrets.APIKEY,'&$filter=Name eq ',steps.get-csjsdata.outputs.itemId) }}
         method: 'GET'
      - run: echo "${{ steps.get_atable.outputs.response }}"
      - uses: octokit/request-action@v2.x
@@ -55,7 +57,7 @@ jobs:
        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   
        with:
-          route: GET /repos/${{ github.repository }}/pulls/${{ steps.get-pullid.outputs.pullid  }} 
+          route: GET /repos/${{ github.repository }}/pulls/${{ steps.get-csjsdata.outputs.pullid  }} 
      - if:  ${{ contains(join(fromJson(steps.get_commit.outputs.data).files.*.filename,','),'screenshot.png') }}
        uses: octokit/request-action@v2.x
        id: get_image
@@ -75,7 +77,7 @@ jobs:
      - name: set json data
        id: setjsondata
        run: |          
-          content='{"Description":"${{fromJson(steps.get_pull.outputs.data).body}}","Element": "${{ fromJson(steps.get_pull.outputs.data).body }}","FormatType": "${{ contains(fromJson(steps.get_image.outputs.data).path,'Element') && 'View,Column,Form' || contains(fromJson(steps.get_image.outputs.data).path,'View') && 'View' || contains(fromJson(steps.get_image.outputs.data).path,'Column') && 'Column' || 'Form' }}","Name": "${{fromJson(steps.get_json.outputs.data).name}}","TemplateType": "Community","Type": "Template","URL": "https://github.com/${{fromJson(steps.get_pull.outputs.data).user.login}}","PartitionKey":"${{ github.event.head_commit.id  }}","RowKey":"${{ github.event.head_commit.id  }}","Image":"${{ fromJson(steps.get_image.outputs.data).download_url }}","JSON":"${{ fromJson(steps.get_json.outputs.data).content }}"}'
+          content='{"Description":"${{fromJson(steps.get_pull.outputs.data).body}}","Element": "${{ fromJson(steps.get_pull.outputs.data).body }}","FormatType": "${{ contains(fromJson(steps.get_image.outputs.data).path,'Element') && 'View,Column,Form' || contains(fromJson(steps.get_image.outputs.data).path,'View') && 'View' || contains(fromJson(steps.get_image.outputs.data).path,'Column') && 'Column' || 'Form' }}","Name": "${{steps.get-csjsdata.outputs.tmplName}}","TemplateType": "Community","Type": "Template","URL": "https://github.com/${{fromJson(steps.get_pull.outputs.data).user.login}}","PartitionKey":"${{ steps.get-csjsdata.outputs.itemId }}","RowKey":"${{ steps.get-csjsdata.outputs.itemId  }}","Image":"${{ fromJson(steps.get_image.outputs.data).download_url }}","JSON":"${{ fromJson(steps.get_json.outputs.data).content }}"}'
           # the following lines are only required for multi line json
           content="${content//'%'/'%25'}"
           content="${content//$'\n'/'%0A'}"
