@@ -9,9 +9,6 @@
 	},
 	"rowFormatter": {
 		"elmType": "div",
-		"style": {
-			"background-color": "#69797e"
-		},
 		"children": [
 			{
 				"elmType": "svg",
