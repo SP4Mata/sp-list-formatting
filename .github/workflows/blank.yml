@@ -38,11 +38,9 @@ jobs:
         script: |
           const { reqCommitData,reqFileData } = process.env
           const pullid = reqCommitData.substring(reqCommitData.indexOf('#')+1,reqCommitData.indexOf(' from'))
-          const deleteName = reqCommitData.substring(reqCommitData.indexOf('/')+1,reqCommitData.indexOf(' '))
-          const deleteType = reqCommitData.substring(reqCommitData.indexOf(' ')+1,reqCommitData.indexOf('/'))
           const folderId = reqFileData.substring(0,reqFileData.lastIndexOf('/'))
           const folderName = reqFileData.substring(reqFileData.indexOf('/')+1,reqFileData.lastIndexOf('/'))
-          core.setOutput('itemId', (reqCommitData.indexOf('Delete') > -1?(deleteType + deleteName):folderId).replace(/[^0-9a-z]/gi, ''))
+          core.setOutput('itemId', folderId.replace(/[^0-9a-z]/gi, ''))
           core.setOutput('tmplName', folderName.replace(/-/gi, ' '))
           core.setOutput('pullid', pullid)  
           core.setOutput('isDelete', reqCommitData.indexOf('Delete') > -1) 
