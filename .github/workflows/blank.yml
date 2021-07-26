@@ -31,8 +31,7 @@ jobs:
           route: GET /repos/${{ github.repository }}/commits/${{ github.event.head_commit.id  }} 
      - id: get-pullid
        env: 
-          reqCommitData: ${{ fromJson(steps.get_commit.outputs.data).commit.message }}
-          reqFileData: ${{ fromJson(steps.get_commit.outputs.data).files }}          
+          reqCommitData: ${{ fromJson(steps.get_commit.outputs.data).commit.message }}      
        uses: actions/github-script@0.9.0
        with:
         script: |
@@ -40,8 +39,6 @@ jobs:
           const pullid = reqCommitData.substring(reqCommitData.indexOf('#')+1,reqCommitData.indexOf(' from'))
           const deleteName = reqCommitData.substring(reqCommitData.indexOf('/')+1,reqCommitData.indexOf(' '))
           const deleteType = reqCommitData.substring(reqCommitData.indexOf(' ')+1,reqCommitData.indexOf('/'))
-          const folderName = reqFileData[0].filename.substring(reqFileData[0].filename.lastIndexOf('/'))
-          core.setOutput('itemId', (reqCommitData.indexOf('Delete') > -1?(deleteType + deleteName):folderName))
           core.setOutput('pullid', pullid)  
      - name: get Data
        uses: fjogeleit/http-request-action@master
