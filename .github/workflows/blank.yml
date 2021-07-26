@@ -40,10 +40,10 @@ jobs:
           const pullid = reqCommitData.substring(reqCommitData.indexOf('#')+1,reqCommitData.indexOf(' from'))
           const deleteName = reqCommitData.substring(reqCommitData.indexOf('/')+1,reqCommitData.indexOf(' '))
           const deleteType = reqCommitData.substring(reqCommitData.indexOf(' ')+1,reqCommitData.indexOf('/'))
-          const folderId = reqFileData.substring(0,reqFileData.lastIndexOf('/')-1)
-          const folderName = reqFileData.substring(reqFileData.indexOf('/'),reqFileData.lastIndexOf('/')-1)
-          core.setOutput('itemId', (reqCommitData.indexOf('Delete') > -1?(deleteType + deleteName):folderId))
-          core.setOutput('tmplName', folderName)
+          const folderId = reqFileData.substring(0,reqFileData.lastIndexOf('/'))
+          const folderName = reqFileData.substring(reqFileData.indexOf('/')+1,reqFileData.lastIndexOf('/'))
+          core.setOutput('itemId', (reqCommitData.indexOf('Delete') > -1?(deleteType + deleteName):folderId).replace(/[^0-9a-z]/gi, ''))
+          core.setOutput('tmplName', folderName.replace(/[^0-9a-z]/gi, ''))
           core.setOutput('pullid', pullid)  
      - name: get Data
        uses: fjogeleit/http-request-action@master
