@@ -45,6 +45,7 @@ jobs:
           core.setOutput('itemId', (reqCommitData.indexOf('Delete') > -1?(deleteType + deleteName):folderId).replace(/[^0-9a-z]/gi, ''))
           core.setOutput('tmplName', folderName.replace(/-/gi, ' '))
           core.setOutput('pullid', pullid)  
+          core.setOutput('isDelete', reqCommitData.indexOf('Delete') > -1) 
      - name: get Data
        uses: fjogeleit/http-request-action@master
        id: get_atable
@@ -52,7 +53,15 @@ jobs:
         url: ${{ format('{0}{1}{2}''{3}''', secrets.APIURL,secrets.APIKEY,'&$filter=RowKey eq ',steps.get-csjsdata.outputs.itemId) }}
         method: 'GET'
      - run: echo "${{ steps.get_atable.outputs.response }}"
-     - uses: octokit/request-action@v2.x
+     - if:  ${{ steps.get-csjsdata.outputs.isDelete }}
+       name: delete Data
+       uses: fjogeleit/http-request-action@master
+       id: delete_adata
+       with:
+        url: ${{ fromJson(steps.get_atable.outputs.response).value[0] && format('{0}({1}''{2}'',{3}''{4}''){5}', secrets.APIURL, 'PartitionKey=',fromJson(steps.get_atable.outputs.response).value[0].PartitionKey,'RowKey=',fromJson(steps.get_atable.outputs.response).value[0].RowKey,secrets.APIKEY) }}
+        method: 'DELETE'
+     - if:  ${{ steps.get-csjsdata.outputs.pullid }}
+       uses: octokit/request-action@v2.x
        id: get_pull
        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   
@@ -74,7 +83,8 @@ jobs:
        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
      - run: echo "${{ steps.get_json.outputs.data }}"
-     - name: set json data
+     - if:  ${{ steps.get-csjsdata.outputs.pullid }}
+       name: set json data
        id: setjsondata
        run: |          
           content='{"Description":"${{fromJson(steps.get_pull.outputs.data).title}}","Element": "${{ fromJson(steps.get_pull.outputs.data).body }}","FormatType": "${{ contains(fromJson(steps.get_image.outputs.data).path,'Element') && 'View,Column,Form' || contains(fromJson(steps.get_image.outputs.data).path,'View') && 'View' || contains(fromJson(steps.get_image.outputs.data).path,'Column') && 'Column' || 'Form' }}","Name": "${{steps.get-csjsdata.outputs.tmplName}}","TemplateType": "Community","Type": "Template","URL": "https://github.com/${{fromJson(steps.get_pull.outputs.data).user.login}}","PartitionKey":"${{ steps.get-csjsdata.outputs.itemId }}","RowKey":"${{ steps.get-csjsdata.outputs.itemId  }}","Image":"${{ fromJson(steps.get_image.outputs.data).download_url }}","JSON":"${{ fromJson(steps.get_json.outputs.data).content }}"}'
@@ -84,7 +94,8 @@ jobs:
           content="${content//$'\r'/'%0D'}"
           # end of optional handling for multi line json
           echo "::set-output name=dataJson::$content"     
-     - name: post Data
+     - if:  ${{ steps.get-csjsdata.outputs.pullid }}
+       name: post Data
        uses: fjogeleit/http-request-action@master
        id: set_atable
        with:
