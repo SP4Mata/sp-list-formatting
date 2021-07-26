@@ -36,7 +36,7 @@ jobs:
        with:
         script: |
           const { reqData } = process.env
-          const val = `${reqData}`
+          const val = reqData
           const pullid = val.commit.message.substring(val.commit.message.indexOf('#')+1,val.commit.message.indexOf(' from'))
           const deleteName = val.commit.message.substring(val.commit.message.indexOf('/')+1,val.commit.message.indexOf(' '))
           const deleteType = val.commit.message.substring(val.commit.message.indexOf(' ')+1,val.commit.message.indexOf('/'))
