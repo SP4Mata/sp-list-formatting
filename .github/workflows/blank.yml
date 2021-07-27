@@ -43,7 +43,7 @@ jobs:
           core.setOutput('itemId', (folderId?folderId.replace(/[^0-9a-z]/gi, ''):folderId))
           core.setOutput('tmplName', (folderName?folderName.replace(/-/gi, ' '):folderName))
           core.setOutput('pullid', pullid)  
-          core.setOutput('isDelete', (reqCommitData.indexOf('Delete') > -1?true:false)) 
+          core.setOutput('isDelete', (reqCommitData.indexOf('Delete') > -1?"true":"false")) 
      - name: get Data
        uses: fjogeleit/http-request-action@master
        id: get_atable
@@ -51,7 +51,7 @@ jobs:
         url: ${{ format('{0}{1}{2}''{3}''', secrets.APIURL,secrets.APIKEY,'&$filter=RowKey eq ',steps.get-csjsdata.outputs.itemId) }}
         method: 'GET'
      - run: echo "${{ steps.get_atable.outputs.response }}"
-     - if:  ${{ steps.get-csjsdata.outputs.isDelete }}
+     - if:  ${{ steps.get-csjsdata.outputs.isDelete == 'true' }}
        name: delete Data
        uses: fjogeleit/http-request-action@master
        id: delete_adata
