@@ -65,7 +65,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   
        with:
           route: GET /repos/${{ github.repository }}/pulls/${{ steps.get-csjsdata.outputs.pullid  }} 
-     - if:  ${{ contains(join(fromJson(steps.get_commit.outputs.data).files.*.filename,','),'screenshot.png') }}
+     - if:  ${{ steps.get-csjsdata.outputs.pullid && contains(join(fromJson(steps.get_commit.outputs.data).files.*.filename,','),'screenshot.png') }}
        uses: octokit/request-action@v2.x
        id: get_image
        with:
@@ -73,7 +73,7 @@ jobs:
        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
      - run: echo "${{ steps.get_image.outputs.data }}"
-     - if:  ${{ contains(join(fromJson(steps.get_commit.outputs.data).files.*.filename,','),'.json') }}
+     - if:  ${{steps.get-csjsdata.outputs.pullid && contains(join(fromJson(steps.get_commit.outputs.data).files.*.filename,','),'.json') }}
        uses: octokit/request-action@v2.x
        id: get_json
        with:
