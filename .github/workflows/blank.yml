@@ -39,11 +39,7 @@ jobs:
           const { reqCommitData,reqFileData } = process.env
           const pullid = reqCommitData.substring(reqCommitData.indexOf('#')+1,reqCommitData.indexOf(' from'))
           const folderId = reqFileData.substring(0,reqFileData.lastIndexOf('/'))
-          const folderName = reqFileData.substring(reqFileData.indexOf('/')+1,reqFileData.lastIndexOf('/'))
-          core.setOutput('itemId', (folderId?folderId.replace(/[^0-9a-z]/gi, ''):folderId))
-          core.setOutput('tmplName', (folderName?folderName.replace(/-/gi, ' '):folderName))
-          core.setOutput('pullid', pullid)  
-          core.setOutput('isDelete', reqCommitData.indexOf('Delete') > -1) 
+          const folderName = reqFileData.substring(reqFileData.indexOf('/')+1,reqFileData.lastIndexOf('/'))     
      - name: get Data
        uses: fjogeleit/http-request-action@master
        id: get_atable
