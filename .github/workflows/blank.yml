@@ -42,6 +42,8 @@ jobs:
           const folderName = reqFileData.substring(reqFileData.indexOf('/')+1,reqFileData.lastIndexOf('/'))
           core.setOutput('itemId', (folderId?folderId.replace(/[^0-9a-z]/gi, ''):folderId))
           core.setOutput('tmplName', (folderName?folderName.replace(/-/gi, ' '):folderName))
+          core.setOutput('pullid', pullid)  
+          core.setOutput('isDelete', (reqCommitData.indexOf('Delete') > -1?true:false)) 
      - name: get Data
        uses: fjogeleit/http-request-action@master
        id: get_atable
