@@ -51,12 +51,12 @@ jobs:
         url: ${{ format('{0}{1}{2}''{3}''', secrets.APIURL,secrets.APIKEY,'&$filter=RowKey eq ',steps.get-csjsdata.outputs.itemId) }}
         method: 'GET'
      - run: echo "${{ steps.get_atable.outputs.response }}"
-     - if:  ${{ steps.get-csjsdata.outputs.isDelete == 'true' }}
+     - if:  ${{ steps.get-csjsdata.outputs.isDelete == 'true' && fromJson(steps.get_atable.outputs.response).value[0]}}
        name: delete Data
        uses: fjogeleit/http-request-action@master
        id: delete_adata
        with:
-        url: ${{ fromJson(steps.get_atable.outputs.response).value[0] && format('{0}({1}''{2}'',{3}''{4}''){5}', secrets.APIURL, 'PartitionKey=',fromJson(steps.get_atable.outputs.response).value[0].PartitionKey,'RowKey=',fromJson(steps.get_atable.outputs.response).value[0].RowKey,secrets.APIKEY) }}
+        url: ${{ format('{0}({1}''{2}'',{3}''{4}''){5}', secrets.APIURL, 'PartitionKey=',fromJson(steps.get_atable.outputs.response).value[0].PartitionKey,'RowKey=',fromJson(steps.get_atable.outputs.response).value[0].RowKey,secrets.APIKEY) }}
         method: 'DELETE'
      - if:  ${{ steps.get-csjsdata.outputs.pullid }}
        uses: octokit/request-action@v2.x
