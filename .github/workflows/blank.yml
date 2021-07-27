@@ -58,7 +58,7 @@ jobs:
        with:
         url: ${{ format('{0}({1}''{2}'',{3}''{4}''){5}', secrets.APIURL, 'PartitionKey=',fromJson(steps.get_atable.outputs.response).value[0].PartitionKey,'RowKey=',fromJson(steps.get_atable.outputs.response).value[0].RowKey,secrets.APIKEY) }}
         method: 'DELETE'
-        customHeaders: '{If-Match:"*"}'
+        customHeaders: '{"If-Match":"*"}'
      - if:  ${{ steps.get-csjsdata.outputs.pullid }}
        uses: octokit/request-action@v2.x
        id: get_pull
