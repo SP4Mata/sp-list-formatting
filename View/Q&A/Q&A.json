@@ -1,0 +1,135 @@
+{
+	"$schema": "https://developer.microsoft.com/json-schemas/sp/v2/row-formatting.schema.json",
+	"groupProps": {
+		"headerFormatter": {
+			"elmType": "div",
+			"style": {
+				"display": "flex",
+				"flex-direction": "row",
+				"align-items": "start",
+				"flex-wrap": "wrap",
+				"color": "#8665b3",
+				"font-weight": "600",
+				"font-family": "Segoe UI"
+			},
+			"attributes": {
+				"class": "ms-fontColor-themePrimary sp-row-card"
+			},
+			"txtContent": "@group.fieldData"
+		},
+		"hideFooter": true
+	},
+	"rowFormatter": {
+		"elmType": "div",
+		"style": {
+			"display": "flex",
+			"flex-direction": "column",
+			"align-items": "stretch",
+			"flex-wrap": "wrap",
+			"font-family": "Segoe UI",
+			"margin-left": "80px"
+		},
+		"children": [
+			{
+				"elmType": "div",
+				"style": {
+					"display": "flex",
+					"flex-direction": "column",
+					"align-items": "stretch",
+					"flex-wrap": "wrap",
+					"background-color": "#b2b2b229",
+					"color": "#b2b2b229",
+					"font-size": "large",
+					"padding": "15px"
+				},
+				"children": [
+					{
+						"elmType": "div",
+						"style": {
+							"display": "flex",
+							"flex-direction": "row",
+							"align-items": "start",
+							"flex-wrap": "wrap",
+							"color": "#8665b3",
+							"vertical-align": "top",
+							"font-size": "medium",
+							"text-align": "left",
+							"padding": "0px 15px 0px 0px"
+						},
+						"attributes": {
+							"class": "ms-fontColor-themePrimary"
+						},
+						"children": [
+							{
+								"elmType": "span",
+								"style": {
+									"display": "flex",
+									"align-items": "start",
+									"color": "#8665b3"
+								},
+								"attributes": {
+									"iconName": "Lightbulb"
+								}
+							},
+							{
+								"elmType": "span",
+								"style": {
+									"display": "flex",
+									"align-items": "start",
+									"color": "#8665b3",
+									"font-family": "Segoe UI"
+								},
+								"attributes": {
+									"class": "ms-fontColor-themePrimary"
+								},
+								"txtContent": "Answer"
+							}
+						]
+					},
+					{
+						"elmType": "div",
+						"style": {
+							"display": "flex",
+							"flex-direction": "row",
+							"align-items": "start",
+							"flex-wrap": "wrap",
+							"color": "#000000"
+						},
+						"txtContent": "[$Answer]"
+					},
+					{
+						"elmType": "div",
+						"style": {
+							"display": "flex",
+							"flex-direction": "row",
+							"align-items": "start",
+							"flex-wrap": "wrap"
+						},
+						"children": [
+							{
+								"elmType": "button",
+								"style": {
+									"background-color": "#8665b3",
+									"color": "#ffff",
+									"fill": "currentColor",
+									"margin-top": "10px"
+								},
+								"customRowAction": {
+									"action": "defaultClick"
+								},
+								"attributes": {
+									"class": "ms-fontColor-themePrimary sp-row-button"
+								},
+								"txtContent": "Show more"
+							}
+						]
+					}
+				]
+			}
+		]
+	},
+	"hideSelection": true,
+	"hideColumnHeader": true,
+	"hideFooter": true,
+	"debugMode": false
+}
